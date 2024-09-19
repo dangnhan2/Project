@@ -1,7 +1,8 @@
 Thư viện:
 1. react paginate: phân trang
 Cách cài đặt: npm install react-paginate --save
-
+2. react toastify
+Cách cài đặt : 
 
 npx create-react-app "projectName"
 cd "projectName"
