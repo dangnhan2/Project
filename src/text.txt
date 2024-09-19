@@ -1,0 +1,23 @@
+Thư viện:
+1. react paginate: phân trang
+Cách cài đặt: npm install react-paginate --save
+
+
+npx create-react-app "projectName"
+cd "projectName"
+npm start
+
+Ctrl +C : đóng terminal => yes
+
+Khởi tạo 1 repo  và push lên github
+git init
+git add .
+git remote add origin https://github.com/dangnhan2/FER.git
+git commnit -m "first-commit"
+git branch -M main
+git push -u origin main
+
+push lên github khi đã có repo
+git add .
+git commnit -m "first-commit"
+git push -u origin main
