@@ -3,13 +3,23 @@ import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../Service/UserService";
 import ReactPaginate from "react-paginate";
 import ModalAddNewUser from "./ModalAddNewUser";
+import ModalEditUser from "./ModalEditUser";
+import ModalConfirm from "./ModaConfirm";
+import _ from "lodash";
 const TableUser = (props) => {
   const [listUsers, setListUser] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [isShowModalAddNewUser, setIsShowModalAddNewUser] = useState(false);
+  const [isShowModalEdit, setIsShowModalEdit] = useState(false);
+  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+  const [dataUserEdit, setDataUserEdit] = useState({});
+  const [dataUserDelete, setDataUserDelete] = useState({});
+
   const handleClose = () => {
     setIsShowModalAddNewUser(false);
+    setIsShowModalEdit(false);
+    setIsShowModalDelete(false);
   };
   useEffect(() => {
     getUser(1);
@@ -33,6 +43,35 @@ const TableUser = (props) => {
   const handleUpdateTable = (user) => {
     setListUser([user, ...listUsers]);
   };
+
+  const handleEditUser = (user) => {
+    console.log(user);
+    setDataUserEdit(user);
+    setIsShowModalEdit(true);
+  };
+  const handleEditUserFromModal = (user) => {
+    let cloneListUser = _.cloneDeep(listUsers);
+    let index = listUsers.findIndex((item) => item.id === user.id);
+
+    // Update the user's first name
+    cloneListUser[index].first_name = user.first_name;
+
+    // Update the state with the modified list
+    setListUser(cloneListUser);
+  };
+
+  const handleDeleteUser = (user) => {
+    setDataUserDelete(user);
+    setIsShowModalDelete(true);
+  };
+
+  const handleDeleteUserFromModal = (user) => {
+    let cloneListUser = _.cloneDeep(listUsers);
+    cloneListUser = cloneListUser.filter((item) => item.id !== user.id);
+
+    // Update the state with the modified list
+    setListUser(cloneListUser);
+  };
   return (
     <>
       <div className="my-3 d-flex justify-content-between">
@@ -53,6 +92,7 @@ const TableUser = (props) => {
             <th>Email</th>
             <th>First Name</th>
             <th>Last Name</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -62,6 +102,20 @@ const TableUser = (props) => {
               <td>{listUser.email}</td>
               <td>{listUser.first_name}</td>
               <td>{listUser.last_name}</td>
+              <td>
+                <button
+                  className="btn btn-warning mx-3 "
+                  onClick={() => handleEditUser(listUser)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => handleDeleteUser(listUser)}
+                >
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -89,8 +143,21 @@ const TableUser = (props) => {
         handleClose={handleClose}
         handleUpdateTable={handleUpdateTable}
       />
+
+      <ModalEditUser
+        show={isShowModalEdit}
+        handleClose={handleClose}
+        dataUserEdit={dataUserEdit}
+        handleEditUserFromModal={handleEditUserFromModal}
+      />
+
+      <ModalConfirm
+        show={isShowModalDelete}
+        handleClose={handleClose}
+        dataUserDelete={dataUserDelete}
+        handleDeleteUserFromModal={handleDeleteUserFromModal}
+      />
     </>
   );
 };
-
 export default TableUser;

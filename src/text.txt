@@ -3,7 +3,8 @@ Thư viện:
 Cách cài đặt: npm install react-paginate --save
 2. react toastify
 Cách cài đặt : 
-
+3. lodash npm
+Cách cài đặt :
 npx create-react-app "projectName"
 cd "projectName"
 npm start
