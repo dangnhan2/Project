@@ -6,6 +6,7 @@ import ModalAddNewUser from "./ModalAddNewUser";
 import ModalEditUser from "./ModalEditUser";
 import ModalConfirm from "./ModaConfirm";
 import _ from "lodash";
+import "./TableUser.scss";
 const TableUser = (props) => {
   const [listUsers, setListUser] = useState([]);
   const [totalUsers, setTotalUsers] = useState(0);
@@ -15,6 +16,8 @@ const TableUser = (props) => {
   const [isShowModalDelete, setIsShowModalDelete] = useState(false);
   const [dataUserEdit, setDataUserEdit] = useState({});
   const [dataUserDelete, setDataUserDelete] = useState({});
+  const [sortBy, setSortBy] = useState("asc");
+  const [sortField, setSortField] = useState("id");
 
   const handleClose = () => {
     setIsShowModalAddNewUser(false);
@@ -72,6 +75,16 @@ const TableUser = (props) => {
     // Update the state with the modified list
     setListUser(cloneListUser);
   };
+
+  // Sort by using lodash
+  const handleSort = (sortBy, sortField) => {
+    setSortBy(sortBy);
+    setSortField(sortField);
+    let cloneListUser = _.cloneDeep(listUsers);
+    cloneListUser = _.orderBy(cloneListUser, [sortField], [sortBy]);
+    console.log(">>>", cloneListUser);
+    setListUser(cloneListUser);
+  };
   return (
     <>
       <div className="my-3 d-flex justify-content-between">
@@ -88,8 +101,36 @@ const TableUser = (props) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Email</th>
+            <th>
+              <div className="sort-header">
+                <div>ID</div>
+                <div className="sort-header-icons">
+                  <i
+                    className="fa-solid fa-arrow-down-long "
+                    onClick={() => handleSort("desc", "id")}
+                  ></i>
+                  <i
+                    className="fa-solid fa-arrow-up-long "
+                    onClick={() => handleSort("asc", "id")}
+                  ></i>
+                </div>
+              </div>
+            </th>
+            <th>
+              <div className="sort-header">
+                <div>Email</div>
+                <div className="sort-header-icons">
+                  <i
+                    className="fa-solid fa-arrow-down-long "
+                    onClick={() => handleSort("desc", "email")}
+                  ></i>
+                  <i
+                    className="fa-solid fa-arrow-up-long "
+                    onClick={() => handleSort("asc", "email")}
+                  ></i>
+                </div>
+              </div>
+            </th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Action</th>

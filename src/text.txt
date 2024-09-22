@@ -5,6 +5,11 @@ Cách cài đặt: npm install react-paginate --save
 Cách cài đặt : 
 3. lodash npm
 Cách cài đặt :
+4. react table
+
+
+
+
 npx create-react-app "projectName"
 cd "projectName"
 npm start

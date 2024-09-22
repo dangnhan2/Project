@@ -1,0 +1,18 @@
+.sort-header {
+  display: flex;
+  justify-content: space-between;
+
+  .sort-header-icons i {
+    cursor: pointer;
+    padding: 2px 5px;
+    margin: 0 2px;
+    border: 2px solid black;
+    border-radius: 5px;
+    background-color: hsla(138, 100%, 50%, 0.233);
+    transition: background-color 0.25s;
+  }
+
+  .sort-header-icons i:hover {
+    background-color: hsla(138, 100%, 50%, 0.752);
+  }
+}
