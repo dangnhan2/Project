@@ -6,6 +6,7 @@ import ModalAddNewUser from "./ModalAddNewUser";
 import ModalEditUser from "./ModalEditUser";
 import ModalConfirm from "./ModaConfirm";
 import _, { debounce } from "lodash";
+import { CSVLink, CSVDownload } from "react-csv";
 
 import "./TableUser.scss";
 const TableUser = (props) => {
@@ -141,18 +142,41 @@ const TableUser = (props) => {
   //   debouncedSearch(term); // Call the debounced API function
   // };
 
+  const csvData = [
+    ["firstname", "lastname", "email"],
+    ["Ahmed", "Tomi", "ah@smthing.co.com"],
+    ["Raed", "Labes", "rl@smthing.co.com"],
+    ["Yezzi", "Min l3b", "ymin@cocococo.com"],
+  ];
+
   return (
     <>
       <div className=" my-3 d-flex justify-content-between align-items-center">
         <span>
           <b>List User:</b>
         </span>
-        <button
-          className="btn btn-success"
-          onClick={() => setIsShowModalAddNewUser(true)}
-        >
-          Add New User
-        </button>
+
+        <div>
+          <label htmlFor="test" className="btn btn-warning  btn-csv">
+            <i className="fa-sharp fa-solid fa-file-import"></i> Import
+          </label>
+          <input type="file" id="test" hidden />
+
+          <CSVLink
+            data={csvData}
+            filename={"user.csv"}
+            className="btn btn-primary btn-csv"
+          >
+            <i className="fa-solid fa-file-arrow-down"></i> Export
+          </CSVLink>
+
+          <button
+            className="btn btn-success"
+            onClick={() => setIsShowModalAddNewUser(true)}
+          >
+            <i className="fa-solid fa-circle-plus"></i> Add New
+          </button>
+        </div>
       </div>
 
       <div className="col-6 my-3">

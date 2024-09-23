@@ -6,6 +6,8 @@ Cách cài đặt :
 3. lodash npm
 Cách cài đặt :
 4. fontawesome
+Cách cài đặt:
+5. react-csv , react papaparse
 
 
 
