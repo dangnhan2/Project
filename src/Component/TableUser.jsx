@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../Service/UserService";
 import ReactPaginate from "react-paginate";
 import ModalAddNewUser from "./ModalAddNewUser";
 import ModalEditUser from "./ModalEditUser";
 import ModalConfirm from "./ModaConfirm";
-import _ from "lodash";
+import _, { debounce } from "lodash";
+
 import "./TableUser.scss";
 const TableUser = (props) => {
   const [listUsers, setListUser] = useState([]);
@@ -18,7 +19,7 @@ const TableUser = (props) => {
   const [dataUserDelete, setDataUserDelete] = useState({});
   const [sortBy, setSortBy] = useState("asc");
   const [sortField, setSortField] = useState("id");
-
+  const [searchEmail, setSearchEmail] = useState("");
   const handleClose = () => {
     setIsShowModalAddNewUser(false);
     setIsShowModalEdit(false);
@@ -48,7 +49,7 @@ const TableUser = (props) => {
   };
 
   const handleEditUser = (user) => {
-    console.log(user);
+    // console.log(user);
     setDataUserEdit(user);
     setIsShowModalEdit(true);
   };
@@ -82,12 +83,67 @@ const TableUser = (props) => {
     setSortField(sortField);
     let cloneListUser = _.cloneDeep(listUsers);
     cloneListUser = _.orderBy(cloneListUser, [sortField], [sortBy]);
-    console.log(">>>", cloneListUser);
+    // console.log(">>>", cloneListUser);
     setListUser(cloneListUser);
   };
+
+  // const handleSearch = (e) => {
+  //   let term = e.target.value;
+  //   setSearchEmail(term);
+  //   if (term) {
+  //     console.log("run");
+  //     let cloneListUser = _.cloneDeep(listUsers);
+  //     (cloneListUser = cloneListUser.filter((item) =>
+  //       item.email.includes(term)
+  //     )),
+  //       setListUser(cloneListUser);
+  //   } else {
+  //     getUser(1);
+  //   }
+  // };
+
+  const debouncedSearch = debounce((term) => {
+    if (term) {
+      console.log("debounced");
+      let cloneListUser = _.cloneDeep(listUsers);
+      cloneListUser = cloneListUser.filter((item) => item.email.includes(term));
+      setListUser(cloneListUser);
+    } else {
+      getUser(1); // Reload users if the search term is cleared
+    }
+  }, 2000);
+
+  const handleSearch = (e) => {
+    let term = e.target.value;
+    setSearchEmail(term); // Update the search input value immediately
+    debouncedSearch(term); // Call the debounced function
+  };
+
+  // const debouncedSearch = useCallback(
+  //   debounce((term) => {
+  //     if (term) {
+  //       console.log("debounced");
+  //       let cloneListUser = _.cloneDeep(listUsers);
+  //       cloneListUser = cloneListUser.filter((item) =>
+  //         item.email.includes(term)
+  //       );
+  //       setListUser(cloneListUser);
+  //     } else {
+  //       getUser(1); // Reload users if the search term is cleared
+  //     }
+  //   }, 1000),
+  //   []
+  // );
+
+  // const handleSearch = (e) => {
+  //   let term = e.target.value;
+  //   setSearchEmail(term); // Update the input field in real-time
+  //   debouncedSearch(term); // Call the debounced API function
+  // };
+
   return (
     <>
-      <div className="my-3 d-flex justify-content-between">
+      <div className=" my-3 d-flex justify-content-between align-items-center">
         <span>
           <b>List User:</b>
         </span>
@@ -97,6 +153,16 @@ const TableUser = (props) => {
         >
           Add New User
         </button>
+      </div>
+
+      <div className="col-6 my-3">
+        <input
+          value={searchEmail}
+          type="text"
+          placeholder="Search by Email..."
+          className="form-control"
+          onChange={handleSearch}
+        />
       </div>
       <Table striped bordered hover>
         <thead>
