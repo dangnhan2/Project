@@ -27,7 +27,7 @@ const ModalConfirm = (props) => {
           <Modal.Title>Delete A User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="">
+          <div>
             This action can't be undone! Do you want to delete this user? <br />
             <b>email ={dataUserDelete.email}</b>
           </div>

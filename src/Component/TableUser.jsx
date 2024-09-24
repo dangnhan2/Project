@@ -2,12 +2,13 @@ import { useEffect, useState, useCallback } from "react";
 import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../Service/UserService";
 import ReactPaginate from "react-paginate";
+import { toast } from "react-toastify";
 import ModalAddNewUser from "./ModalAddNewUser";
 import ModalEditUser from "./ModalEditUser";
 import ModalConfirm from "./ModaConfirm";
 import _, { debounce } from "lodash";
 import { CSVLink, CSVDownload } from "react-csv";
-
+import Papa from "papaparse";
 import "./TableUser.scss";
 const TableUser = (props) => {
   const [listUsers, setListUser] = useState([]);
@@ -21,6 +22,8 @@ const TableUser = (props) => {
   const [sortBy, setSortBy] = useState("asc");
   const [sortField, setSortField] = useState("id");
   const [searchEmail, setSearchEmail] = useState("");
+  const [dataExport, setDataExport] = useState([]);
+
   const handleClose = () => {
     setIsShowModalAddNewUser(false);
     setIsShowModalEdit(false);
@@ -105,7 +108,7 @@ const TableUser = (props) => {
 
   const debouncedSearch = debounce((term) => {
     if (term) {
-      console.log("debounced");
+      // console.log("debounced");
       let cloneListUser = _.cloneDeep(listUsers);
       cloneListUser = cloneListUser.filter((item) => item.email.includes(term));
       setListUser(cloneListUser);
@@ -120,34 +123,68 @@ const TableUser = (props) => {
     debouncedSearch(term); // Call the debounced function
   };
 
-  // const debouncedSearch = useCallback(
-  //   debounce((term) => {
-  //     if (term) {
-  //       console.log("debounced");
-  //       let cloneListUser = _.cloneDeep(listUsers);
-  //       cloneListUser = cloneListUser.filter((item) =>
-  //         item.email.includes(term)
-  //       );
-  //       setListUser(cloneListUser);
-  //     } else {
-  //       getUser(1); // Reload users if the search term is cleared
-  //     }
-  //   }, 1000),
-  //   []
-  // );
+  const getUserExport = (event, done) => {
+    let result = [];
+    if (listUsers && listUsers.length > 0) {
+      result.push(["Id", "Email", "FirstName", "LastName"]);
+      listUsers.map((item, index) => {
+        let array = [];
+        array[0] = item.id;
+        array[1] = item.email;
+        array[2] = item.first_name;
+        array[3] = item.last_name;
+        result.push(array);
+      });
+      setDataExport(result);
+      done();
+    }
+  };
 
-  // const handleSearch = (e) => {
-  //   let term = e.target.value;
-  //   setSearchEmail(term); // Update the input field in real-time
-  //   debouncedSearch(term); // Call the debounced API function
-  // };
+  const handleImportCsv = (event) => {
+    if (event.target && event.target.files) {
+      let file = event.target.files[0];
 
-  const csvData = [
-    ["firstname", "lastname", "email"],
-    ["Ahmed", "Tomi", "ah@smthing.co.com"],
-    ["Raed", "Labes", "rl@smthing.co.com"],
-    ["Yezzi", "Min l3b", "ymin@cocococo.com"],
-  ];
+      if (file.type !== "text/csv") {
+        toast.error("File must be csv...");
+      } else {
+        Papa.parse(file, {
+          // header: true,
+          complete: function (results) {
+            let rawCSV = results.data;
+            // console.log(rawCSV);
+            if (rawCSV.length > 0) {
+              if (rawCSV[0] && rawCSV[0].length === 3) {
+                if (
+                  rawCSV[0][0] !== "email" ||
+                  rawCSV[0][1] !== "first_name" ||
+                  rawCSV[0][2] !== "last_name"
+                ) {
+                  toast.error("Wrong format header");
+                } else {
+                  let result = [];
+                  rawCSV.map((item, index) => {
+                    if (index > 0 && item.length === 3) {
+                      let obj = {};
+                      obj.email = item[0];
+                      obj.first_name = item[1];
+                      obj.last_name = item[2];
+                      result.push(obj);
+                    }
+                  });
+                  setListUser(result);
+                  console.log("check:", result);
+                }
+              } else {
+                toast.error("Wrong format CSV file!");
+              }
+            } else {
+              toast.error("Data not found");
+            }
+          },
+        });
+      }
+    }
+  };
 
   return (
     <>
@@ -160,12 +197,19 @@ const TableUser = (props) => {
           <label htmlFor="test" className="btn btn-warning  btn-csv">
             <i className="fa-sharp fa-solid fa-file-import"></i> Import
           </label>
-          <input type="file" id="test" hidden />
+          <input
+            type="file"
+            id="test"
+            hidden
+            onChange={(event) => handleImportCsv(event)}
+          />
 
           <CSVLink
-            data={csvData}
             filename={"user.csv"}
             className="btn btn-primary btn-csv"
+            data={dataExport}
+            asyncOnClick={true}
+            onClick={getUserExport}
           >
             <i className="fa-solid fa-file-arrow-down"></i> Export
           </CSVLink>
