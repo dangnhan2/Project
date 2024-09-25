@@ -8,4 +8,70 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Cosolas, "Courier New", monospace;
 }
 .app-container {
+  .login-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+  }
+  .title {
+    text-align: center;
+    font-size: 25px;
+    padding-top: 30px;
+  }
+  .text {
+    padding: 5px 0;
+  }
+
+  input {
+    padding: 15px 10px;
+    outline: none;
+    background-color: #1618230f;
+    border: #1618230f;
+    border-radius: 3px;
+    margin-bottom: 7px;
+    width: 100%;
+    &:hover {
+      background-color: #a0a29cac;
+    }
+  }
+
+  button {
+    padding: 10px;
+    border-radius: 3px;
+    outline: none;
+    border: none;
+    margin-top: 23px;
+
+    &.active {
+      background-color: #ff0000b4;
+    }
+  }
+
+  button:disabled,
+  button[disabled] {
+    cursor: not-allowed;
+  }
+
+  .back {
+    margin-top: 10px;
+    text-align: center;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .inputPassword {
+    position: relative;
+
+    i {
+      position: absolute;
+      top: 20px;
+      right: 10px;
+    }
+  }
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
 }
