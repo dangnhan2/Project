@@ -3,8 +3,18 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import broCode from "../assets/broCode.jpg";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 const Header = (props) => {
+  let navigate = useNavigate();
+  const handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    if (!localStorage.getItem("token")) {
+      toast.success("Logout succeeded");
+      navigate("/");
+    }
+  };
   return (
     <>
       <Container className="bg-light">
@@ -26,8 +36,20 @@ const Header = (props) => {
 
             <Nav>
               <NavDropdown title="Setting" id="basic-nav-dropdown">
-                <NavDropdown.Item href="/login">LogIn</NavDropdown.Item>
-                <NavDropdown.Item href="/logout">LogOut</NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink to="/login" className="nav-link">
+                    Login
+                  </NavLink>
+                </NavDropdown.Item>
+                <NavDropdown.Item>
+                  <NavLink
+                    to="/logout"
+                    className="nav-link"
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </NavLink>
+                </NavDropdown.Item>
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>

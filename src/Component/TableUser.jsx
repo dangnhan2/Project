@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../Service/UserService";
 import ReactPaginate from "react-paginate";
@@ -7,7 +7,7 @@ import ModalAddNewUser from "./ModalAddNewUser";
 import ModalEditUser from "./ModalEditUser";
 import ModalConfirm from "./ModaConfirm";
 import _, { debounce } from "lodash";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 import Papa from "papaparse";
 import "./TableUser.scss";
 const TableUser = (props) => {
@@ -193,7 +193,7 @@ const TableUser = (props) => {
           <b>List User:</b>
         </span>
 
-        <div>
+        <div className="d-flex gap-2 align-items-center">
           <label htmlFor="test" className="btn btn-warning  btn-csv">
             <i className="fa-sharp fa-solid fa-file-import"></i> Import
           </label>
@@ -215,7 +215,7 @@ const TableUser = (props) => {
           </CSVLink>
 
           <button
-            className="btn btn-success"
+            className="btn btn-success btn-add"
             onClick={() => setIsShowModalAddNewUser(true)}
           >
             <i className="fa-solid fa-circle-plus"></i> Add New

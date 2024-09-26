@@ -1,10 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { loginApi } from "../Service/UserService";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 function Login() {
+  let navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
-  //   const [form, setForm] = useState({});
+  const [showLoading, setShowLoading] = useState(false);
 
+  useEffect(() => {
+    let token = localStorage.getItem("token");
+    if (token) navigate("/");
+  }, []);
+  const handleLogin = async () => {
+    if (!email || !password) {
+      toast.error("Missing email or password");
+      return;
+    }
+    setShowLoading(true);
+    let res = await loginApi("eve.holt@reqres.in", "cityslicka");
+    //console.log(res);
+    if (res && res.token) {
+      localStorage.setItem("token", res.token);
+      navigate("/");
+    } else {
+      if (res && res.status === 400) toast.error(res.data.error);
+    }
+    setShowLoading(false);
+  };
   return (
     <>
       <div className="login-container col-12 col-sm-4">
@@ -40,12 +64,13 @@ function Login() {
         </div>
         <button
           className={email && password ? "active" : ""}
-          disabled={email && password ? false : true}
+          disabled={(email && password) || showLoading ? false : true}
+          onClick={handleLogin}
         >
-          Login
+          {showLoading ? <i className="fas fa-spinner fa-pulse"></i> : ""} Login
         </button>
         <div className="back">
-          <i class="fa-solid fa-backward"></i> Go Back
+          <i className="fa-solid fa-backward"></i> Go Back
         </div>
       </div>
     </>

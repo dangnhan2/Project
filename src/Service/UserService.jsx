@@ -14,4 +14,8 @@ const updateUser = (name, job) => {
 const deleteUser = (id) => {
   return axios.delete("/api/users/", { id: id });
 };
-export { fetchAllUser, postCreateUse, updateUser, deleteUser };
+
+const loginApi = (email, password) => {
+  return axios.post("/api/login", { email: email, password: password });
+};
+export { fetchAllUser, postCreateUse, updateUser, deleteUser, loginApi };
